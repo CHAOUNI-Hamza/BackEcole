@@ -5,8 +5,11 @@ namespace App\Http\Controllers\Administration;
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use App\Http\Resources\AdministrationResource;
-
+use Notification;
+use App\Notifications\Administration\AdministrationNotification;
 use App\Models\Administration;
+use Illuminate\Support\Facades\Password;
+use Illuminate\Auth\Events\PasswordReset;
 
 
 class AdministrationController extends Controller
@@ -115,25 +118,25 @@ class AdministrationController extends Controller
      *
      * @return \Illuminate\Http\Response
      */
-    public function create()
+    public function store(Request $request)
     {
-        $administration = new Administration;
+        $administration = new Administration();
         $administration->email = $request->email;
         $administration->password = bcrypt($request->password);
         $administration->save();
 
-        return "created";
-    }
+        $offerData = [
+            'name' => 'BOGO',
+            'body' => 'You received an offer.',
+            'thanks' => 'Thank you',
+            'offerText' => 'Check out the offer',
+            'offerUrl' => url('/'),
+            'offer_id' => 007
+        ];
 
-    /**
-     * Store a newly created resource in storage.
-     *
-     * @param  \Illuminate\Http\Request  $request
-     * @return \Illuminate\Http\Response
-     */
-    public function store(Request $request)
-    {
-        //
+        Notification::send($administration, new AdministrationNotification($administration));
+
+        return "created";
     }
 
     /**

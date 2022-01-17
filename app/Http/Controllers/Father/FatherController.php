@@ -5,6 +5,8 @@ namespace App\Http\Controllers\Father;
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use App\Http\Resources\FatherResource;
+use Illuminate\Support\Facades\Password;
+use Illuminate\Auth\Events\PasswordReset;
 
 use App\Models\Father;
 
@@ -110,20 +112,6 @@ class FatherController extends Controller
         return FatherResource::collection($father);
     }
 
-    /**
-     * Show the form for creating a new resource.
-     *
-     * @return \Illuminate\Http\Response
-     */
-    public function create(Request $request)
-    {
-        $father = new Father;
-        $father->email = $request->email;
-        $father->password = bcrypt($request->password);
-        $father->save();
-
-        return "created";
-    }
 
     /**
      * Store a newly created resource in storage.
@@ -133,7 +121,12 @@ class FatherController extends Controller
      */
     public function store(Request $request)
     {
-        //
+        $father = new Father;
+        $father->email = $request->email;
+        $father->password = bcrypt($request->password);
+        $father->save();
+
+        return "created";
     }
 
     /**

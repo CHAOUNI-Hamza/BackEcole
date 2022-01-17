@@ -9,7 +9,6 @@ use App\Http\Resources\UserResource;
 use App\Models\User;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Password;
-
 use Illuminate\Auth\Events\PasswordReset;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Str;
@@ -98,8 +97,8 @@ class AuthController extends Controller
         ], 500);
     }
 
-    // create
-    public function create(Request $request)
+    // store
+    public function store(Request $request)
     {
         $user = new User;
         $user->email = $request->email;

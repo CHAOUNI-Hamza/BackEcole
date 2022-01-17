@@ -5,6 +5,10 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Foundation\Auth\User as Authenticatable;
+use App\Notifications\ResetPasswordNotification;
+use Illuminate\Database\Eloquent\SoftDeletes;
+use Tymon\JWTAuth\Contracts\JWTSubject;
+
 
 class Student extends Authenticatable  implements JWTSubject
 {
@@ -16,6 +20,14 @@ class Student extends Authenticatable  implements JWTSubject
      * @var array<int, string>
      */
     protected $fillable = [
+        'nom' ,
+        'prenom',
+        'niveau_scolaire', 
+        'type_niveau', 
+        'photo', 
+        'num_matricule', 
+        'sex',
+        'date_naissance',
         'email',
     ];
 

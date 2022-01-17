@@ -39,7 +39,7 @@ Route::group([
     Route::post('logout', 'App\Http\Controllers\User\AuthController@logout'); // Logout Admin
     Route::post('refresh', 'App\Http\Controllers\User\AuthController@refresh'); // Refresh Admin
     Route::post('me', 'App\Http\Controllers\User\AuthController@me'); // Auth Admin
-    Route::post('create', 'App\Http\Controllers\User\AuthController@create'); // Create Admin
+    Route::post('store', 'App\Http\Controllers\User\AuthController@store'); // Create Admin
     Route::get('index', 'App\Http\Controllers\User\AuthController@index'); // Lists Admin
     Route::post('update/{id}', 'App\Http\Controllers\User\AuthController@update'); // Update Admin 
     Route::get('trashed', 'App\Http\Controllers\User\AuthController@trashed'); // Trashed Admin 
@@ -65,7 +65,7 @@ Route::group([
     Route::post('logout', 'App\Http\Controllers\Administration\AdministrationController@logout'); // Logout Administration
     Route::post('refresh', 'App\Http\Controllers\Administration\AdministrationController@refresh'); // Refresh Administration
     Route::post('me', 'App\Http\Controllers\Administration\AdministrationController@me'); // Auth Administration
-    Route::post('create', 'App\Http\Controllers\Administration\AdministrationController@create'); // Create Administration
+    Route::post('store', 'App\Http\Controllers\Administration\AdministrationController@store'); // Create Administration
     Route::get('index', 'App\Http\Controllers\Administration\AdministrationController@index'); // Lists Administration
     Route::post('update/{id}', 'App\Http\Controllers\Administration\AdministrationController@update'); // Update Administration 
     Route::get('trashed', 'App\Http\Controllers\Administration\AdministrationController@trashed'); // Trashed Administration 
@@ -90,7 +90,7 @@ Route::group([
      Route::post('logout', 'App\Http\Controllers\Professor\ProfessorController@logout'); // Logout PROFESSOR
      Route::post('refresh', 'App\Http\Controllers\Professor\ProfessorController@refresh'); // Refresh PROFESSOR
      Route::post('me', 'App\Http\Controllers\Professor\ProfessorController@me'); // Auth PROFESSOR
-     Route::post('create', 'App\Http\Controllers\Professor\ProfessorController@create'); // Create PROFESSOR
+     Route::post('store', 'App\Http\Controllers\Professor\ProfessorController@store'); // Create PROFESSOR
      Route::get('index', 'App\Http\Controllers\Professor\ProfessorController@index'); // Lists PROFESSOR
      Route::post('update/{id}', 'App\Http\Controllers\Professor\ProfessorController@update'); // Update PROFESSOR 
      Route::get('trashed', 'App\Http\Controllers\Professor\ProfessorController@trashed'); // Trashed PROFESSOR 
@@ -115,7 +115,7 @@ Route::group([
      Route::post('logout', 'App\Http\Controllers\Student\StudentController@logout'); // Logout Student
      Route::post('refresh', 'App\Http\Controllers\Student\StudentController@refresh'); // Refresh Student
      Route::post('me', 'App\Http\Controllers\Student\StudentController@me'); // Auth Student
-     Route::post('create', 'App\Http\Controllers\Student\StudentController@create'); // Create Student
+     Route::post('store', 'App\Http\Controllers\Student\StudentController@store'); // Create Student
      Route::get('index', 'App\Http\Controllers\Student\StudentController@index'); // Lists Student
      Route::post('update/{id}', 'App\Http\Controllers\Student\StudentController@update'); // Update Student 
      Route::get('trashed', 'App\Http\Controllers\Student\StudentController@trashed'); // Trashed Student 
@@ -140,7 +140,7 @@ Route::group([
      Route::post('logout', 'App\Http\Controllers\Father\FatherController@logout'); // Logout Father
      Route::post('refresh', 'App\Http\Controllers\Father\FatherController@refresh'); // Refresh Father
      Route::post('me', 'App\Http\Controllers\Father\FatherController@me'); // Auth Father
-     Route::post('create', 'App\Http\Controllers\Father\FatherController@create'); // Create Father
+     Route::post('store', 'App\Http\Controllers\Father\FatherController@store'); // Create Father
      Route::get('index', 'App\Http\Controllers\Father\FatherController@index'); // Lists Father
      Route::post('update/{id}', 'App\Http\Controllers\Father\FatherController@update'); // Update Father 
      Route::get('trashed', 'App\Http\Controllers\Father\FatherController@trashed'); // Trashed Father 
@@ -152,6 +152,24 @@ Route::group([
  
  });
  // End Routes Api < FATHER >
+
+  // Start Routes Api < CONTACT >
+Route::group([
+
+    //'middleware' => 'api',
+    'prefix' => 'v1/contacts'
+ 
+ ],   function ($router) {
+ 
+     Route::post('store', 'App\Http\Controllers\Contact\ContactController@store'); // Create Contact
+     Route::get('index', 'App\Http\Controllers\Contact\ContactController@index'); // Lists Contact
+     Route::get('trashed', 'App\Http\Controllers\Contact\ContactController@trashed'); // Trashed Contact 
+     Route::delete('destroy/{id}', 'App\Http\Controllers\Contact\ContactController@destroy'); // Destroy Contact 
+     Route::post('restore/{id}', 'App\Http\Controllers\Contact\ContactController@restore'); // Restore Contact 
+     Route::post('forced/{id}', 'App\Http\Controllers\Contact\ContactController@forced'); // Forced Contact 
+ 
+ });
+ // End Routes Api < CONTACT >
 
 
 
