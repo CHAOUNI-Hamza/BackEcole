@@ -125,6 +125,30 @@ return [
             'expire' => 60,
             'throttle' => 60,
         ],
+        'administrations' => [
+            'provider' => 'administrations',
+            'table' => 'password_resets',
+            'expire' => 60,
+            'throttle' => 60,
+        ],
+        'students' => [
+            'provider' => 'students',
+            'table' => 'password_resets',
+            'expire' => 60,
+            'throttle' => 60,
+        ],
+        'professors' => [
+            'provider' => 'professors',
+            'table' => 'password_resets',
+            'expire' => 60,
+            'throttle' => 60,
+        ],
+        'fathers' => [
+            'provider' => 'fathers',
+            'table' => 'password_resets',
+            'expire' => 60,
+            'throttle' => 60,
+        ],
     ],
 
     /*

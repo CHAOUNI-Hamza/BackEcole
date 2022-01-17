@@ -106,7 +106,7 @@ Route::group([
  // Start Routes Api < STUDENT >
 Route::group([
 
-    //'middleware' => 'api',
+    //'middleware' => 'students',
     'prefix' => 'v1/student'
  
  ],   function ($router) {

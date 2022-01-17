@@ -24,7 +24,7 @@ class AuthController extends Controller
      */
     public function __construct()
     {
-        $this->middleware('auth:api', ['except' => ['login', 'create', 'users', 'delete', 'restore', 'forced', 'trashed', 'update', 'me', 'resetpassword', 'forgotpassword']]);
+        $this->middleware('auth:api', ['except' => ['login', 'store', 'users', 'delete', 'restore', 'forced', 'trashed', 'update', 'me', 'resetpassword', 'forgotpassword']]);
     }
 
     /**
@@ -52,6 +52,7 @@ class AuthController extends Controller
         $status = Password::sendResetLink(
             $request->only('email')
         );
+        return $status;
     
         if ($status == Password::RESET_LINK_SENT) {
             return [

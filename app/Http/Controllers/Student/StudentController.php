@@ -18,6 +18,16 @@ use Illuminate\Validation\Rules\Password as RulesPassword;
 class StudentController extends Controller
 {
     /**
+     * Create a new AuthController instance.
+     *
+     * @return void
+     */
+    public function __construct()
+    {
+        $this->middleware('auth:students', ['except' => ['login','forgotpassword','resetpassword','store','update','trashed','destroy','restore','forced','me','logout','refresh']]);
+    }
+
+    /**
      * Get a JWT via given credentials.
      *
      * @return \Illuminate\Http\JsonResponse
@@ -26,12 +36,17 @@ class StudentController extends Controller
     {
         $credentials = request(['email', 'password']);
 
-        if (! $token = auth()->attempt($credentials)) {
+        if (! $token = auth()->guard('students')->attempt($credentials)) {
             return response()->json(['error' => 'Unauthorized'], 401);
         }
 
         return $this->respondWithToken($token);
     }
+
+    protected function broker()
+{
+    return Password::broker('students');
+} 
 
     // forgot password
     public function forgotpassword(Request $request) {
@@ -42,6 +57,8 @@ class StudentController extends Controller
         $status = Password::sendResetLink(
             $request->only('email')
         );
+
+        return $status;
     
         if ($status == Password::RESET_LINK_SENT) {
             return [
@@ -122,6 +139,7 @@ class StudentController extends Controller
     
     public function store(StudentRequest $request)
     {
+        //return $request->all();
         $student = new Student;
         $student->nom = $request->nom;
         $student->prenom = $request->prenom;
@@ -130,6 +148,7 @@ class StudentController extends Controller
         $student->photo = $request->photo;
         $student->num_matricule = $request->num_matricule;
         $student->sex = $request->sex;
+        $student->email = $request->email;
         $student->date_naissance = $request->date_naissance;
         $student->password = bcrypt($request->password);
         $student->save();
