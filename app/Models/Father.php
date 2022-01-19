@@ -8,12 +8,24 @@ use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
 use Tymon\JWTAuth\Contracts\JWTSubject;
 use Illuminate\Database\Eloquent\SoftDeletes;
-
 use App\Notifications\ResetPasswordNotification;
+use App\Models\Student;
 
 class Father extends Authenticatable  implements JWTSubject
 {
     use HasFactory, SoftDeletes, Notifiable;
+
+    // start relation
+
+    /**
+     * Get the students that owns the comment.
+     */
+    public function students()
+    {
+        return $this->belongsTo(Student::class);
+    }
+
+    // end relation
 
     /**
      * The attributes that are mass assignable.

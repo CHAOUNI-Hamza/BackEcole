@@ -11,11 +11,23 @@ use Laravel\Sanctum\HasApiTokens;
 use Illuminate\Database\Eloquent\SoftDeletes;
 use Tymon\JWTAuth\Contracts\JWTSubject;
 use Illuminate\Auth\Passwords\CanResetPassword;
+use App\Models\Father;
 
 
 class Student extends Authenticatable  implements JWTSubject
 {
     use HasApiTokens, HasFactory, Notifiable, SoftDeletes;
+
+    // start relation
+
+    /**
+     * Get the fathers for the blog post.
+     */
+    public function fathers()
+    {
+        return $this->hasMany(Father::class);
+    }
+    // end relation
 
     /**
      * The attributes that are mass assignable.
