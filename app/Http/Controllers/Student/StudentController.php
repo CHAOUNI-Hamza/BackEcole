@@ -17,6 +17,8 @@ use Illuminate\Validation\Rules\Password as RulesPassword;
 
 class StudentController extends Controller
 {
+
+
     /**
      * Create a new AuthController instance.
      *
@@ -24,7 +26,7 @@ class StudentController extends Controller
      */
     public function __construct()
     {
-        $this->middleware('auth:students', ['except' => ['login','forgotpassword','resetpassword','store','update','trashed','destroy','restore','forced','me','logout','refresh']]);
+        $this->middleware('auth:students', ['except' => ['login','forgotpassword','resetpassword','store']]);
     }
 
     /**
@@ -43,10 +45,7 @@ class StudentController extends Controller
         return $this->respondWithToken($token);
     }
 
-    protected function broker()
-{
-    return Password::broker('students');
-} 
+    
 
     // forgot password
     public function forgotpassword(Request $request) {
@@ -57,8 +56,6 @@ class StudentController extends Controller
         $status = Password::sendResetLink(
             $request->only('email')
         );
-
-        return $status;
     
         if ($status == Password::RESET_LINK_SENT) {
             return [
@@ -108,7 +105,7 @@ class StudentController extends Controller
      *
      * @return \Illuminate\Http\Response
      */
-    public function index()
+    public function index(Request $request)
     {
         if( $request->created_at ) {
             $users = Student::Orderby( $request->sortby , $request->orderby )->whereDate( 'created_at', $request->created_at )->paginate($request->paginate);
@@ -188,8 +185,16 @@ class StudentController extends Controller
     public function update(Request $request, $id)
     {
         $student = Student::find($id);
+        $student->nom = $request->nom;
+        $student->prenom = $request->prenom;
+        $student->niveau_scolaire = $request->niveau_scolaire;
+        $student->type_niveau = $request->type_niveau;
+        $student->photo = $request->photo;
+        $student->num_matricule = $request->num_matricule;
+        $student->sex = $request->sex;
         $student->email = $request->email;
-        $student->password = bcrypt($request->password);
+        $student->date_naissance = $request->date_naissance;
+        //$student->password = bcrypt($request->password);
         $student->save();
 
         return 'Updated';
@@ -203,8 +208,7 @@ class StudentController extends Controller
 
     // delete
     public function destroy($id) {
-        $student = Student::withTrashed()
-        ->where('id', $id);
+        $student = Student::withTrashed()->where('id', $id);
         $student->delete();
         return 'delete';
     }
