@@ -136,7 +136,6 @@ class StudentController extends Controller
     
     public function store(StudentRequest $request)
     {
-        //return $request->all();
         $student = new Student;
         $student->nom = $request->nom;
         $student->prenom = $request->prenom;
@@ -154,28 +153,6 @@ class StudentController extends Controller
     }
 
     /**
-     * Display the specified resource.
-     *
-     * @param  int  $id
-     * @return \Illuminate\Http\Response
-     */
-    public function show($id)
-    {
-        //
-    }
-
-    /**
-     * Show the form for editing the specified resource.
-     *
-     * @param  int  $id
-     * @return \Illuminate\Http\Response
-     */
-    public function edit($id)
-    {
-        //
-    }
-
-    /**
      * Update the specified resource in storage.
      *
      * @param  \Illuminate\Http\Request  $request
@@ -184,6 +161,42 @@ class StudentController extends Controller
      */
     public function update(Request $request, $id)
     {
+        if( $request->get('current-password') && $request->get('new-password')) {
+            if (!(Hash::check($request->get('current-password'), Student::find($id)->password))) {
+                // The passwords matches
+                return "errorYour current password does not matches with the password.";
+            }
+    
+            if(strcmp($request->get('current-password'), $request->get('new-password')) == 0){
+                // Current password and new password same
+                return "error New Password cannot be same as your current password.";
+            }
+    
+            /*$validatedData = $request->validate([
+                'current-password' => 'required',
+                'new-password' => 'required|string|min:8|confirmed',
+            ]);*/
+    
+            //Change Password
+            $student = Student::find($id);
+            $student->nom = $request->nom;
+            $student->prenom = $request->prenom;
+            $student->niveau_scolaire = $request->niveau_scolaire;
+            $student->type_niveau = $request->type_niveau;
+            $student->photo = $request->photo;
+            $student->num_matricule = $request->num_matricule;
+            $student->sex = $request->sex;
+            $student->email = $request->email;
+            $student->date_naissance = $request->date_naissance;
+            $Student->forceFill([
+                'password' => Hash::make($request->get('new-password')),
+                'remember_token' => Str::random(60),
+            ]);
+            $student->save();
+    
+            return "success Password successfully changed!";
+        };
+
         $student = Student::find($id);
         $student->nom = $request->nom;
         $student->prenom = $request->prenom;
