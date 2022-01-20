@@ -12,6 +12,7 @@ use Illuminate\Database\Eloquent\SoftDeletes;
 use Tymon\JWTAuth\Contracts\JWTSubject;
 use Illuminate\Auth\Passwords\CanResetPassword;
 use App\Models\Father;
+use App\Models\Administration;
 
 
 class Student extends Authenticatable  implements JWTSubject
@@ -21,12 +22,21 @@ class Student extends Authenticatable  implements JWTSubject
     // start relation
 
     /**
-     * Get the fathers for the blog post.
+     * Get the fathers for the students.
      */
     public function fathers()
     {
         return $this->hasMany(Father::class);
     }
+
+    /**
+     * Get the administration for the students.
+     */
+    public function administration()
+    {
+        return $this->hasMany(Administration::class);
+    }
+
     // end relation
 
     /**

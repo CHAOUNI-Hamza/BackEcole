@@ -18,7 +18,7 @@ class Father extends Authenticatable  implements JWTSubject
     // start relation
 
     /**
-     * Get the students that owns the comment.
+     * Get the students that owns the father.
      */
     public function students()
     {
