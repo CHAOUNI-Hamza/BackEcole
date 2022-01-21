@@ -13,6 +13,7 @@ use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Str;
 use App\Http\Requests\StudentRequest;
+use Illuminate\Support\Facades\Storage;
 use Illuminate\Validation\Rules\Password as RulesPassword;
 
 class StudentController extends Controller
@@ -20,7 +21,7 @@ class StudentController extends Controller
 
 
     /**
-     * Create a new AuthController instance.
+     * Middleware Students.
      *
      * @return void
      */
@@ -29,11 +30,7 @@ class StudentController extends Controller
         $this->middleware('auth:students', ['except' => ['login','forgotpassword','resetpassword','store']]);
     }
 
-    /**
-     * Get a JWT via given credentials.
-     *
-     * @return \Illuminate\Http\JsonResponse
-     */
+    // login
     public function login()
     {
         $credentials = request(['email', 'password']);
@@ -100,11 +97,8 @@ class StudentController extends Controller
             'message'=> __($status)
         ], 500);
     }
-    /**
-     * Display a listing of the resource.
-     *
-     * @return \Illuminate\Http\Response
-     */
+    
+    // index
     public function index(Request $request)
     {
         if( $request->created_at ) {
@@ -133,7 +127,7 @@ class StudentController extends Controller
         return StudentResource::collection($users);
     }
     
-    
+    // store
     public function store(StudentRequest $request)
     {
         $student = new Student;
@@ -141,8 +135,15 @@ class StudentController extends Controller
         $student->prenom = $request->prenom;
         $student->niveau_scolaire = $request->niveau_scolaire;
         $student->type_niveau = $request->type_niveau;
-        $student->photo = $request->photo;
+        $hasFile = $request->hasFile('photo');
+        
+        if( $hasFile ) {
+            $path = $request->file('photo')->store('public/students');  
+            $student->photo = Storage::url($path);
+        }
+        
         $student->num_matricule = $request->num_matricule;
+        $student->sex = $request->sex;
         $student->sex = $request->sex;
         $student->email = $request->email;
         $student->date_naissance = $request->date_naissance;
@@ -152,13 +153,7 @@ class StudentController extends Controller
         return 'created';
     }
 
-    /**
-     * Update the specified resource in storage.
-     *
-     * @param  \Illuminate\Http\Request  $request
-     * @param  int  $id
-     * @return \Illuminate\Http\Response
-     */
+    //update
     public function update(Request $request, $id)
     {
         if( $request->get('current-password') && $request->get('new-password')) {
@@ -242,21 +237,13 @@ class StudentController extends Controller
         return 'forced';
     }
 
-    /**
-     * Get the authenticated Student.
-     *
-     * @return \Illuminate\Http\JsonResponse
-     */
+    // auth
     public function me()
     {
-        return response()->json(auth()->Student());
+        return response()->json(auth()->User());
     }
 
-    /**
-     * Log the student out (Invalidate the token).
-     *
-     * @return \Illuminate\Http\JsonResponse
-     */
+    // logout
     public function logout()
     {
         auth()->logout();
@@ -264,23 +251,13 @@ class StudentController extends Controller
         return response()->json(['message' => 'Successfully logged out']);
     }
 
-    /**
-     * Refresh a token.
-     *
-     * @return \Illuminate\Http\JsonResponse
-     */
+    // refresh
     public function refresh()
     {
         return $this->respondWithToken(auth()->refresh());
     }
 
-    /**
-     * Get the token array structure.
-     *
-     * @param  string $token
-     *
-     * @return \Illuminate\Http\JsonResponse
-     */
+    // respondwithtoken
     protected function respondWithToken($token)
     {
         return response()->json([

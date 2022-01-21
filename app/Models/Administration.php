@@ -8,7 +8,7 @@ use Illuminate\Foundation\Auth\User as Authenticatable;
 use Tymon\JWTAuth\Contracts\JWTSubject;
 use Illuminate\Database\Eloquent\SoftDeletes;
 use Illuminate\Notifications\Notifiable;
-
+use App\Models\Student;
 
 
 
@@ -16,6 +16,18 @@ use Illuminate\Notifications\Notifiable;
 class Administration extends Authenticatable  implements JWTSubject
 {
     use HasFactory, SoftDeletes, Notifiable;
+
+    // start relation
+
+    /**
+     * Get the students that owns the father.
+     */
+    public function students()
+    {
+        return $this->belongsTo(Student::class);
+    }
+
+    // end relation
 
 
     /**

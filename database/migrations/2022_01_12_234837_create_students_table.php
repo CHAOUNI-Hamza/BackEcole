@@ -18,7 +18,7 @@ class CreateStudentsTable extends Migration
             $table->string('nom', 20);
             $table->string('prenom', 20);
 
-            $table->unsignedBigInteger('father_id');
+            $table->unsignedBigInteger('father_id')->nullable();
             $table->foreign('father_id')->references('id')->on('fathers')->onDelete('cascade');
 
             $table->unsignedBigInteger('administration_id')->nullable();
