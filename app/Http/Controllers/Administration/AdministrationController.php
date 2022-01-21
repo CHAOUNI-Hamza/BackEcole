@@ -14,12 +14,18 @@ use Illuminate\Auth\Events\PasswordReset;
 
 class AdministrationController extends Controller
 {
+    // middleware
+    public function __construct()
+    {
+        $this->middleware('auth:administrations', ['except' => ['login','forgotpassword','resetpassword','store']]);
+    }
+
     // Login
     public function login()
     {
         $credentials = request(['email', 'password']);
 
-        if (! $token = auth()->attempt($credentials)) {
+        if (! $token = auth()->guard('administrations')->attempt($credentials)) {
             return response()->json(['error' => 'Unauthorized'], 401);
         }
 
@@ -80,11 +86,7 @@ class AdministrationController extends Controller
         ], 500);
     }
 
-    /**
-     * Display a listing of the resource.
-     *
-     * @return \Illuminate\Http\Response
-     */
+    // index
     public function index(Request $request)
     {
         if( $request->created_at ) {
@@ -113,11 +115,7 @@ class AdministrationController extends Controller
         return AdministrationResource::collection($administration);
     }
 
-    /**
-     * Show the form for creating a new resource.
-     *
-     * @return \Illuminate\Http\Response
-     */
+    // store
     public function store(Request $request)
     {
         $administration = new Administration();
@@ -140,28 +138,6 @@ class AdministrationController extends Controller
     }
 
     /**
-     * Display the specified resource.
-     *
-     * @param  int  $id
-     * @return \Illuminate\Http\Response
-     */
-    public function show($id)
-    {
-        //
-    }
-
-    /**
-     * Show the form for editing the specified resource.
-     *
-     * @param  int  $id
-     * @return \Illuminate\Http\Response
-     */
-    public function edit($id)
-    {
-        //
-    }
-
-    /**
      * Update the specified resource in storage.
      *
      * @param  \Illuminate\Http\Request  $request
@@ -178,12 +154,7 @@ class AdministrationController extends Controller
         return 'Updated';
     }
 
-    /**
-     * Remove the specified resource from storage.
-     *
-     * @param  int  $id
-     * @return \Illuminate\Http\Response
-     */
+    // destroy
     public function destroy($id)
     {
         $administration = Administration::withTrashed()

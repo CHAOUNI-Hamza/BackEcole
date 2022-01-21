@@ -13,12 +13,18 @@ use App\Models\Father;
 
 class FatherController extends Controller
 {
+    // middleware
+    public function __construct()
+    {
+        $this->middleware('auth:fathers', ['except' => ['login','forgotpassword','resetpassword','store']]);
+    }
+
     // Login
     public function login()
     {
         $credentials = request(['email', 'password']);
 
-        if (! $token = auth()->attempt($credentials)) {
+        if (! $token = auth()->guard('fathers')->attempt($credentials)) {
             return response()->json(['error' => 'Unauthorized'], 401);
         }
 
@@ -79,11 +85,7 @@ class FatherController extends Controller
         ], 500);
     }
 
-    /**
-     * Display a listing of the resource.
-     *
-     * @return \Illuminate\Http\Response
-     */
+    // index
     public function index(Request $request)
     {
         if( $request->created_at ) {
@@ -113,72 +115,92 @@ class FatherController extends Controller
     }
 
 
-    /**
-     * Store a newly created resource in storage.
-     *
-     * @param  \Illuminate\Http\Request  $request
-     * @return \Illuminate\Http\Response
-     */
+    // store
     public function store(Request $request)
     {
         $father = new Father;
+        $father->nom = $request->nom;
+        $father->prenom = $request->prenom;
+        $hasFile = $request->hasFile('photo');
+        
+        if( $hasFile ) {
+            $path = $request->file('photo')->store('public/fathers');  
+            $father->photo = Storage::url($path);
+        }
+        
+        $father->sex = $request->sex;
         $father->email = $request->email;
+        $father->date_naissance = $request->date_naissance;
         $father->password = bcrypt($request->password);
         $father->save();
 
-        return "created";
+        return 'created';
     }
 
-    /**
-     * Display the specified resource.
-     *
-     * @param  int  $id
-     * @return \Illuminate\Http\Response
-     */
-    public function show($id)
-    {
-        //
-    }
-
-    /**
-     * Show the form for editing the specified resource.
-     *
-     * @param  int  $id
-     * @return \Illuminate\Http\Response
-     */
-    public function edit($id)
-    {
-        //
-    }
-
-    /**
-     * Update the specified resource in storage.
-     *
-     * @param  \Illuminate\Http\Request  $request
-     * @param  int  $id
-     * @return \Illuminate\Http\Response
-     */
+    // update
     public function update(Request $request, $id)
     {
-        $father = Father::find($id);
-        $father->email = $request->email;
-        $father->password = bcrypt($request->password);
-        $father->save();
+        if( $request->get('current-password') && $request->get('new-password')) {
+            if (!(Hash::check($request->get('current-password'), Father::find($id)->password))) {
+                // The passwords matches
+                return "errorYour current password does not matches with the password.";
+            }
+    
+            if(strcmp($request->get('current-password'), $request->get('new-password')) == 0){
+                // Current password and new password same
+                return "error New Password cannot be same as your current password.";
+            }
+    
+            /*$validatedData = $request->validate([
+                'current-password' => 'required',
+                'new-password' => 'required|string|min:8|confirmed',
+            ]);*/
+    
+            //Change Password
+            $ather = Father::find($id);
+            $father->nom = $request->nom;
+            $father->prenom = $request->prenom;
+            $hasFile = $request->hasFile('photo');
+        
+            if( $hasFile ) {
+                $path = $request->file('photo')->store('public/students');  
+                $father->photo = Storage::url($path);
+            }
+        
+            $father->sex = $request->sex;
+            $father->email = $request->email;
+            $father->date_naissance = $request->date_naissance;
+            $father->password = bcrypt($request->password);
+            $father->save();
 
-        return 'Updated';
+            return 'update';
+        } else {
+            $father = Father::find($id);
+            $father->nom = $request->nom;
+            $father->prenom = $request->prenom;
+            $hasFile = $request->hasFile('photo');
+        
+            if( $hasFile ) {
+                $path = $request->file('photo')->store('public/students');  
+               $father->photo = Storage::url($path);
+            }
+        
+            $father->sex = $request->sex;
+            $father->email = $request->email;
+            $father->date_naissance = $request->date_naissance;
+            //$father->password = bcrypt($request->password);
+            $father->save();
+
+            return 'update';
     }
+}
 
-    /**
-     * Remove the specified resource from storage.
-     *
-     * @param  int  $id
-     * @return \Illuminate\Http\Response
-     */
+    // destroy
     public function destroy($id)
     {
         $father = Father::withTrashed()
         ->where('id', $id);
-        $user->delete();
+        $father->delete();
         return 'delete';
     }
 
@@ -204,21 +226,13 @@ class FatherController extends Controller
         return 'forced';
     }
 
-    /**
-     * Get the authenticated User.
-     *
-     * @return \Illuminate\Http\JsonResponse
-     */
+    // auth
     public function me()
     {
         return response()->json(auth()->user());
     }
 
-    /**
-     * Log the user out (Invalidate the token).
-     *
-     * @return \Illuminate\Http\JsonResponse
-     */
+    // logout
     public function logout()
     {
         auth()->logout();
@@ -226,23 +240,13 @@ class FatherController extends Controller
         return response()->json(['message' => 'Successfully logged out']);
     }
 
-    /**
-     * Refresh a token.
-     *
-     * @return \Illuminate\Http\JsonResponse
-     */
+    // refresh
     public function refresh()
     {
         return $this->respondWithToken(auth()->refresh());
     }
 
-    /**
-     * Get the token array structure.
-     *
-     * @param  string $token
-     *
-     * @return \Illuminate\Http\JsonResponse
-     */
+    //respondWithToken
     protected function respondWithToken($token)
     {
         return response()->json([

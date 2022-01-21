@@ -15,6 +15,11 @@ class CreateProfessorsTable extends Migration
     {
         Schema::create('professors', function (Blueprint $table) {
             $table->id();
+            $table->string('nom', 20);
+            $table->string('prenom', 20);           
+            $table->string('photo');
+            $table->string('sex', 5);
+            $table->date('date_naissance');
             $table->string('email')->unique();
             $table->timestamp('email_verified_at')->nullable();
             $table->string('password');

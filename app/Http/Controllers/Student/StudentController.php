@@ -20,11 +20,7 @@ class StudentController extends Controller
 {
 
 
-    /**
-     * Middleware Students.
-     *
-     * @return void
-     */
+    // middleware
     public function __construct()
     {
         $this->middleware('auth:students', ['except' => ['login','forgotpassword','resetpassword','store']]);
@@ -178,34 +174,47 @@ class StudentController extends Controller
             $student->prenom = $request->prenom;
             $student->niveau_scolaire = $request->niveau_scolaire;
             $student->type_niveau = $request->type_niveau;
-            $student->photo = $request->photo;
+            $hasFile = $request->hasFile('photo');
+        
+            if( $hasFile ) {
+                $path = $request->file('photo')->store('public/students');  
+                $student->photo = Storage::url($path);
+            }
+        
             $student->num_matricule = $request->num_matricule;
+            $student->sex = $request->sex;
             $student->sex = $request->sex;
             $student->email = $request->email;
             $student->date_naissance = $request->date_naissance;
-            $Student->forceFill([
-                'password' => Hash::make($request->get('new-password')),
-                'remember_token' => Str::random(60),
-            ]);
+            $student->password = bcrypt($request->password);
             $student->save();
-    
-            return "success Password successfully changed!";
-        };
 
-        $student = Student::find($id);
-        $student->nom = $request->nom;
-        $student->prenom = $request->prenom;
-        $student->niveau_scolaire = $request->niveau_scolaire;
-        $student->type_niveau = $request->type_niveau;
-        $student->photo = $request->photo;
-        $student->num_matricule = $request->num_matricule;
-        $student->sex = $request->sex;
-        $student->email = $request->email;
-        $student->date_naissance = $request->date_naissance;
-        //$student->password = bcrypt($request->password);
-        $student->save();
+            return 'update';
+        } else {
+            $student = Student::find($id);
+            $student->nom = $request->nom;
+            $student->prenom = $request->prenom;
+            $student->niveau_scolaire = $request->niveau_scolaire;
+            $student->type_niveau = $request->type_niveau;
+            $hasFile = $request->hasFile('photo');
+        
+            if( $hasFile ) {
+                $path = $request->file('photo')->store('public/students');  
+               $student->photo = Storage::url($path);
+            }
+        
+            $student->num_matricule = $request->num_matricule;
+            $student->sex = $request->sex;
+            $student->sex = $request->sex;
+            $student->email = $request->email;
+            $student->date_naissance = $request->date_naissance;
+            //$student->password = bcrypt($request->password);
+            $student->save();
 
-        return 'Updated';
+            return 'update';
+        }
+
+        
     }
 
     // trashed
