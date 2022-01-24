@@ -23,7 +23,7 @@ class StudentController extends Controller
     // middleware
     public function __construct()
     {
-        $this->middleware('auth:students', ['except' => ['login','forgotpassword','resetpassword','store']]);
+        $this->middleware('auth:students', ['except' => ['login','forgotpassword','resetpassword','store', 'update']]);
     }
 
     // login
@@ -152,21 +152,21 @@ class StudentController extends Controller
     //update
     public function update(Request $request, $id)
     {
-        if( $request->get('current-password') && $request->get('new-password')) {
-            if (!(Hash::check($request->get('current-password'), Student::find($id)->password))) {
+        if( $request->current_password && $request->new_password) {
+            if (!(Hash::check($request->current_password, Student::find($id)->password))) {
                 // The passwords matches
                 return "errorYour current password does not matches with the password.";
             }
     
-            if(strcmp($request->get('current-password'), $request->get('new-password')) == 0){
+            if(strcmp($request->current_password, $request->new_password) == 0){
                 // Current password and new password same
                 return "error New Password cannot be same as your current password.";
             }
     
-            /*$validatedData = $request->validate([
+            $validatedData = $request->validate([
                 'current-password' => 'required',
                 'new-password' => 'required|string|min:8|confirmed',
-            ]);*/
+            ]);
     
             //Change Password
             $student = Student::find($id);
@@ -183,13 +183,12 @@ class StudentController extends Controller
         
             $student->num_matricule = $request->num_matricule;
             $student->sex = $request->sex;
-            $student->sex = $request->sex;
             $student->email = $request->email;
             $student->date_naissance = $request->date_naissance;
-            $student->password = bcrypt($request->password);
+            $student->password = bcrypt($request->get('new-password'));
             $student->save();
 
-            return 'update';
+            return 'update avec change password';
         } else {
             $student = Student::find($id);
             $student->nom = $request->nom;
@@ -208,7 +207,6 @@ class StudentController extends Controller
             $student->sex = $request->sex;
             $student->email = $request->email;
             $student->date_naissance = $request->date_naissance;
-            //$student->password = bcrypt($request->password);
             $student->save();
 
             return 'update';
