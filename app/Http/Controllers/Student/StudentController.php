@@ -14,6 +14,8 @@ use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Str;
 use App\Http\Requests\StudentRequest;
 use Illuminate\Support\Facades\Storage;
+use Illuminate\Support\Facades\Validator;
+use Symfony\Component\HttpFoundation\Response;
 use Illuminate\Validation\Rules\Password as RulesPassword;
 
 class StudentController extends Controller
@@ -23,18 +25,24 @@ class StudentController extends Controller
     // middleware
     public function __construct()
     {
-        $this->middleware('auth:students', ['except' => ['login','forgotpassword','resetpassword','store', 'update']]);
+        $this->middleware('auth:students', ['except' => ['login','forgotpassword','resetpassword','store', 'update', 'index']]);
     }
 
     // login
-    public function login()
+    public function login(Request $request)
     {
+        
+        $this->validate($request, [
+            'email' => 'required',
+            'password' => 'required',
+        ]);
         $credentials = request(['email', 'password']);
 
         if (! $token = auth()->guard('students')->attempt($credentials)) {
             return response()->json(['error' => 'Unauthorized'], 401);
         }
 
+        return $request->getAcceptableContentTypes();
         return $this->respondWithToken($token);
     }
 
@@ -97,6 +105,10 @@ class StudentController extends Controller
     // index
     public function index(Request $request)
     {
+        $users = json_decode($request->filter);
+        /*return $users->emaile;*/
+        return $users[1];
+
         if( $request->created_at ) {
             $users = Student::Orderby( $request->sortby , $request->orderby )->whereDate( 'created_at', $request->created_at )->paginate($request->paginate);
         }
