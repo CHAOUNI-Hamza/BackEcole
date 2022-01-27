@@ -105,9 +105,9 @@ class StudentController extends Controller
     // index
     public function index(Request $request)
     {
-        $users = json_decode($request->filter);
+        //$users = json_decode($request->filter);
         /*return $users->emaile;*/
-        return $users[1];
+        //return $users[1];
 
         if( $request->created_at ) {
             $users = Student::Orderby( $request->sortby , $request->orderby )->whereDate( 'created_at', $request->created_at )->paginate($request->paginate);
