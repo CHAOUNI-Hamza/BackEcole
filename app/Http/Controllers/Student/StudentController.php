@@ -42,7 +42,6 @@ class StudentController extends Controller
             return response()->json(['error' => 'Unauthorized'], 401);
         }
 
-        return $request->getAcceptableContentTypes();
         return $this->respondWithToken($token);
     }
 
@@ -136,7 +135,7 @@ class StudentController extends Controller
     }
     
     // store
-    public function store(StudentRequest $request)
+    public function store(Request $request)
     {
         $student = new Student;
         $student->nom = $request->nom;
@@ -282,7 +281,7 @@ class StudentController extends Controller
         return response()->json([
             'access_token' => $token,
             'token_type' => 'bearer',
-            'expires_in' => auth()->factory()->getTTL() * 60
+            'expires_in' => auth()->factory()->getTTL() * 525949
         ]);
     }
 }
