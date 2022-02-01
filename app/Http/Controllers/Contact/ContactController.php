@@ -19,7 +19,6 @@ class ContactController extends Controller
      */
     public function index(Request $request)
     {
-        return $request->route()->getName();
         if( $request->created_at ) {
             $contact = Contact::Orderby( $request->sortby , $request->orderby )->whereDate( 'created_at', $request->created_at )->paginate($request->paginate);
         }

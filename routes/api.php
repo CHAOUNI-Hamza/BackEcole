@@ -60,7 +60,7 @@ Route::group([
 // Start Routes Api < ADMINISTRATIONS >
 Route::group([
 
-   //'middleware' => 'api',
+   'middleware' => 'api',
    'prefix' => 'v1/administration'
 
 ],   function ($router) {
